@@ -1,0 +1,940 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\colortbl ;\red0\green0\blue0;}
+{\*\generator Riched20 6.3.9600}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\cf1\ul\b\f0\fs28\lang9 BFS\par
+\cf0\ulnone\b0 ...............\par
+\fs24 #include<bits/stdc++.h>\par
+using namespace std;\par
+#define white 0\par
+#define black 1\par
+vector<int> vec[100010];\par
+int level[100010],parent[100010];\par
+int visited[100010];\par
+int node,edge;\par
+void bfs(int s)\par
+\{\par
+    for(int i=1;i<=node;i++)\par
+        visited[i]=white;\par
+    queue<int> q;\par
+    q.push(s);\par
+    visited[s]=black;\par
+    level[s]=0;\par
+    parent[s]=0;\par
+    while(!q.empty())\par
+    \{\par
+        int u=q.front();\par
+        q.pop();\par
+        for(int i=0;i<vec[u].size();i++)\par
+        \{\par
+            if(visited[vec[u][i]]==white)\par
+            \{\par
+                level[vec[u][i]]=level[u]+1;\par
+                visited[vec[u][i]]=black;\par
+                q.push(vec[u][i]);\par
+                parent[vec[u][i]]=u;\par
+            \}\par
+        \}\par
+    \}\par
+\}\par
+int main()\par
+\{\par
+    int u,v,s;\par
+    cin>>node>>edge;\par
+    for(int i=0;i<edge;i++)\par
+    \{\par
+        cin>>u>>v;\par
+        vec[u].push_back(v);\par
+        vec[v].push_back(u);\par
+    \}\par
+    cin>>s;\par
+    bfs(s);\par
+    cout<<endl<<endl;\par
+    for(int i=1;i<=node;i++)\par
+    \{\par
+        cout<<"LEVEL OF NODE "<<i<<" is "<<level[i]<<", parent is "<<parent[i]<<endl<<endl;\par
+    \}\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 DFS\fs24\par
+\ulnone\b0 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+#define white 0\par
+#define black 1\par
+int visited[1000000];\par
+vector<int> vec[100000];\par
+int dfs(int source)\par
+\{\par
+    int siz=vec[source].size();\par
+    for(int i=0;i<siz;i++)\par
+    \{\par
+        int v=vec[source][i];\par
+        if(visited[v]==white)\par
+        \{\par
+            visited[v]=black;\par
+            dfs(v);\par
+        \}\par
+    \}\par
+\}\par
+int main()\par
+\{\par
+    int node,edge,u,v,source;\par
+    cin>>node>>edge;\par
+    for(int i=0;i<edge;i++)\par
+    \{\par
+        cin>>u>>v;\par
+        vec[u].push_back(v);\par
+        vec[v].push_back(u);\par
+    \}\par
+    cin>>source;\par
+    dfs(source);\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+DFS for competitive programming\par
+................................................................................................................................................\par
+\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+vector<int>vec[100010];\par
+int visit[100010],n;\par
+void DFS(int start)\par
+\{\par
+    if(visit[start]==1)\par
+        return;\par
+    visit[start]=1;\par
+    int siz=vec[start].size();\par
+    for(int i=0;i<siz;i++)\par
+    \{\par
+        DFS(vec[start][i]);\par
+    \}\par
+\}\par
+int main()\par
+\{\par
+    int u,v,start;\par
+    cin>>n;\par
+    for(int i=0;i<n;i++)\par
+    \{\par
+        cin>>u>>v;\par
+        vec[u].push_back(v);\par
+        vec[v].push_back(u);\par
+    \}\par
+    cin>>start;\par
+    DFS(start);\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 DIJIKSTRA\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+vector<int> graph[100010],cost[100010];\par
+int visited[100010],par[100010],node,edge;\par
+int distanc[100010];\par
+struct nod\par
+\{\par
+    int u, w;\par
+    nod(int a, int b) \{ u = a; w = b; \}\par
+    bool operator <(const nod& p) const \{ return w>p.w; \}\par
+\};\par
+void dijstra(int source)\par
+\{\par
+    for(int i=0;i<=node;i++)\par
+    \{\par
+        distanc[i]=99999999;\par
+        par[i]=-1;\par
+    \}\par
+    distanc[source]=0;\par
+    priority_queue<nod>pq;\par
+    pq.push(nod(source,0));\par
+    while(!pq.empty())\par
+    \{\par
+        nod top=pq.top();\par
+        pq.pop();\par
+        int u=top.u;\par
+        ///if(u==node-1) return;\par
+        for(int i=0;i<graph[u].size();i++)\par
+        \{\par
+            int v=graph[u][i];\par
+            if(distanc[u]+cost[u][i]<distanc[v])\par
+            \{\par
+                distanc[v]=distanc[u]+cost[u][i];\par
+                pq.push(nod(v,distanc[v]));\par
+                par[v]=u;\par
+            \}\par
+        \}\par
+    \}\par
+    return;\par
+\}\par
+int main()\par
+\{\par
+    int u,v,w,source;\par
+    cin>>node>>edge;\par
+    for(int i=0;i<edge;i++)\par
+    \{\par
+        cin>>u>>v>>w;\par
+        graph[u].push_back(v);\par
+        graph[v].push_back(u);\par
+        cost[u].push_back(w);\par
+        cost[v].push_back(w);\par
+    \}\par
+    cin>>source;\par
+    dijstra(source);\par
+    for(int i=0;i<node;i++)\par
+    \{\par
+        cout<<"node = "<<i<<" distanc = "<<distanc[i]<<" parent = "<<par[i]<<endl;\par
+    \}\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Binary Search Update\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int binarysearch(int low,int high,int *a,int item)\par
+\{\par
+    int mid,res=-1;\par
+    while(low<=high)\par
+    \{\par
+        mid=low+(high-low)/2;\par
+        if(a[mid]<item)\par
+        \{\par
+           res=mid;\par
+           low=mid+1;\par
+        \}\par
+        else\par
+        \{\par
+            high=mid-1;\par
+        \}\par
+    \}\par
+    return res;\par
+\}\par
+int binarysearch1(int low,int high,int *a,int item)\par
+\{\par
+    int mid,res=-1;\par
+    while(low<=high)\par
+    \{\par
+        mid=low+(high-low)/2;\par
+        if(a[mid]<=item)\par
+        \{\par
+           res=mid;\par
+           low=mid+1;\par
+        \}\par
+        else\par
+        \{\par
+            high=mid-1;\par
+        \}\par
+    \}\par
+    return res;\par
+\}\par
+int main()\par
+\{\par
+    int n,item;\par
+    cin>>n;\par
+    int a[n+1];\par
+    for(int i=0;i<n;i++)\par
+        cin>>a[i];\par
+    sort(a,a+n);\par
+    cout<<"AFTER SORT THE ELEMENTS: "<<endl;\par
+    for(int i=0;i<n;i++)\par
+        cout<<a[i]<<"\\t";\par
+    cout<<endl;\par
+    cin>>item;\par
+    int res=binarysearch(0,n-1,a,item);\par
+    int res1=binarysearch1(0,n-1,a,item);\par
+    if(a[res1]!=item)\par
+    \{\par
+        cout<<"THE ITEM IS NOT FOUND"<<endl;\par
+        return 0;\par
+    \}\par
+    for(int i=res+1;i<=res1;i++)\par
+        cout<<i+1<<"\\t";\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Convex Hull\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+double triangle(int x1,int x2,int x3,int y1,int y2,int y3)\par
+\{\par
+    double area;\par
+    int x=((x1*y2)+(x2*y3)+(x3*y1));\par
+    int y=((x2*y1)+(x3*y2)+(x1*y3));\par
+    int x_y=x-y;\par
+    area=(1.0*x_y)/2;\par
+    return area;\par
+\}\par
+int main()\par
+\{\par
+    int n;\par
+    cin>>n;\par
+    int x[n+1],y[n+1],xx[n+1],yy[n+1];\par
+    for(int i=0; i<n; i++)\par
+    \{\par
+        cin>>x[i]>>y[i];\par
+    \}\par
+    double m[n+1];\par
+    int origin_x=x[0],origin_y=y[0];\par
+    for(int i=1; i<n; i++)\par
+    \{\par
+        if(x[i]<origin_x)\par
+        \{\par
+            origin_x=x[i];\par
+            origin_y=y[i];\par
+        \}\par
+    \}\par
+    int cnt=0;\par
+    for(int i=0; i<n; i++)\par
+    \{\par
+        if(x[i]==origin_x&&y[i]==origin_y)\par
+            ;\par
+        else\par
+        \{\par
+            m[cnt]=((y[i]-origin_y)*1.0)/(x[i]-origin_x);\par
+            xx[cnt]=x[i];\par
+            yy[cnt]=y[i];\par
+            cnt++;\par
+        \}\par
+    \}\par
+    double temp;\par
+    int temp1,temp2,temp3,a,b,c;\par
+    for(int i=0; i<cnt; i++)\par
+    \{\par
+        for(int j=i+1; j<cnt; j++)\par
+        \{\par
+            if(m[i]>m[j])\par
+            \{\par
+                temp=m[i];\par
+                m[i]=m[j];\par
+                m[j]=temp;\par
+                temp1=xx[i];\par
+                xx[i]=xx[j];\par
+                xx[j]=temp1;\par
+                temp2=yy[i];\par
+                yy[i]=yy[j];\par
+                yy[j]=temp2;\par
+            \}\par
+        \}\par
+    \}\par
+    stack<int> sx;\par
+    stack<int> sy;\par
+    sx.push(origin_x);\par
+    sx.push(xx[0]);\par
+    sy.push(origin_y);\par
+    sy.push(yy[0]);\par
+    for(int i=1; i<cnt; i++)\par
+    \{\par
+        sx.push(xx[i]);\par
+        sy.push(yy[i]);\par
+        temp1=sx.top();\par
+        sx.pop();\par
+        temp2=sx.top();\par
+        sx.pop();\par
+        temp3=sx.top();\par
+        sx.pop();\par
+        a=sy.top();\par
+        sy.pop();\par
+        b=sy.top();\par
+        sy.pop();\par
+        c=sy.top();\par
+        sy.pop();\par
+        double res=triangle(temp1,temp2,temp3,a,b,c);\par
+        if(res>=0)\par
+        \{\par
+            sx.push(temp1);\par
+            sx.push(temp2);\par
+            sx.push(temp3);\par
+            sy.push(a);\par
+            sy.push(b);\par
+            sy.push(c);\par
+        \}\par
+        else\par
+        \{\par
+            sx.push(temp1);\par
+            sx.push(temp3);\par
+            sy.push(a);\par
+            sy.push(c);\par
+            while(1)\par
+            \{\par
+                int d=sx.top();\par
+                sx.pop();\par
+                int e=sx.top();\par
+                sx.pop();\par
+                int f=sx.top();\par
+                sx.pop();\par
+                int g=sy.top();\par
+                sy.pop();\par
+                int h=sy.top();\par
+                sy.pop();\par
+                int i=sy.top();\par
+                sy.pop();\par
+                double res1=triangle(d,e,f,g,h,i);\par
+                if(res1>=0)\par
+                \{\par
+                    sx.push(d);\par
+                    sx.push(e);\par
+                    sx.push(f);\par
+                    sy.push(g);\par
+                    sy.push(h);\par
+                    sy.push(i);\par
+                    break;\par
+                \}\par
+                else\par
+                \{\par
+                    sx.push(d);\par
+                    sx.push(f);\par
+                    sy.push(g);\par
+                    sy.push(i);\par
+                \}\par
+            \}\par
+        \}\par
+    \}\par
+    cout<<endl<<endl;\par
+    while(!sx.empty())\par
+    \{\par
+        int q=sx.top();\par
+        int r=sy.top();\par
+         cout<<q<<" "<<r<<endl;\par
+        sx.pop();sy.pop();\par
+    \}\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Factorial Mod\ulnone\b0\par
+...................................................................................................................\par
+\fs24 #include<bits/stdc++.h>\par
+using namespace std;\par
+int main()\par
+\{\par
+    int number,mod,ans=1;\par
+    cout<<"PRESS THE FACTORIAL NUMBER: ";\par
+    cin>>number;\par
+    cout<<endl<<"PRESS THE MOD: ";\par
+    cin>>mod;\par
+    for(int i=1;i<=number;i++)\par
+    \{\par
+        ans=(ans*i)%mod;\par
+    \}\par
+    cout<<endl<<"THE ANS IS = "<<ans<<endl;\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Fractional Knapsack\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int main()\par
+\{\par
+    int n,temp1,m;\par
+    cin>>n>>m;\par
+    int weight[n+1],profit[n+1],total=0;\par
+    double ap[n+1],x[n+1]=\{0\},temp,totalprofit=0;\par
+    for(int i=0;i<n;i++)\par
+    \{\par
+        cin>>profit[i]>>weight[i];\par
+        ap[i]=(1.0*profit[i])/weight[i];\par
+    \}\par
+     for(int i=0;i<n;i++)\par
+    \{\par
+        for(int j=i+1;j<n;j++)\par
+        \{\par
+            if(ap[i]<ap[j])\par
+            \{\par
+                temp=ap[i];\par
+                ap[i]=ap[j];\par
+                ap[j]=temp;\par
+                temp1=weight[i];\par
+                weight[i]=weight[j];\par
+                weight[j]=temp1;\par
+            \}\par
+        \}\par
+    \}\par
+    for(int i=0;i<n;i++)\par
+    \{\par
+        if(total+weight[i]<=m)\par
+        \{\par
+            total+=weight[i];\par
+            x[i]=1;\par
+            totalprofit+=weight[i]*ap[i];\par
+        \}\par
+        else\{\par
+            double dif=m-total;\par
+             totalprofit+=dif*ap[i];\par
+             total+=dif;\par
+             x[i]=dif/weight[i];\par
+             break;\par
+        \}\par
+    \}\par
+    cout<<"TOTAL PROFIT = "<<totalprofit<<endl;\par
+    for(int i=0;i<n;i++)\par
+    \{\par
+        cout<<"weight = "<<weight[i]<<" TAKE = "<<x[i]<<endl;\par
+    \}\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+GCD LCM\par
+................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+long long int gcd(long long int a,long long int b)\par
+\{\par
+    if(a%b==0)\par
+        return b;\par
+    else\par
+        return gcd(b,a%b);\par
+\}\par
+int main()\par
+\{\par
+    long long int number1,number2,g,lcm;\par
+    cout<<"PRESS THE FIRST NUMBER: ";\par
+    cin>>number1;\par
+    cout<<endl<<"PRESS THE SECOND NUMBER: ";\par
+    cin>>number2;\par
+    g=gcd(number1,number2);\par
+    lcm=(((number1*1.0)/g)*number2);\par
+    cout<<endl<<"THE GCD IS = "<<g;\par
+    cout<<endl<<"THE LCM IS = "<<lcm;\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Job Sequence with Deadline\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+#define white 0\par
+#define black 1\par
+int cnt,total;\par
+int main()\par
+\{\par
+    int n,temp,temp1;\par
+    cin>>n;\par
+    int dead[n+1],profit[n+1],seq[n+1]=\{0\};\par
+    for(int i=0;i<n;i++)\par
+        cin>>dead[i]>>profit[i];\par
+    for(int i=0;i<n;i++)\par
+    \{\par
+        for(int j=i+1;j<n;j++)\par
+        \{\par
+            if(profit[i]<profit[j])\par
+            \{\par
+                temp=profit[i];\par
+                profit[i]=profit[j];\par
+                profit[j]=temp;\par
+                temp1=dead[i];\par
+                dead[i]=dead[j];\par
+                dead[j]=temp1;\par
+            \}\par
+        \}\par
+    \}\par
+    for(int i=0;i<n;i++)\par
+    \{\par
+        for(int j=dead[i]-1;j>=0;j--)\par
+        \{\par
+            if(seq[j]==white)\par
+            \{\par
+                seq[j]=black;\par
+                total+=profit[i];\par
+                cnt++;\par
+                break;\par
+            \}\par
+        \}\par
+    \}\par
+    cout<<"PROFIT = "<<total<<endl;\par
+    cout<<"ITEM = "<<cnt<<endl;\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Prime Factorization\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int all[10000000];\par
+vector<int> vec;\par
+void factorization(int number)\par
+\{\par
+    int root,root1;\par
+    root=sqrt(number)+1;\par
+    root1=sqrt(root)+1;\par
+    for(int i=3; i<=root1; i=i+2)\par
+    \{\par
+        if(all[i]==0)\par
+        \{\par
+            for(int j=i*i; j<=root; j=j+2*i)\par
+                all[j]=1;\par
+        \}\par
+    \}\par
+    vec.push_back(2);\par
+    for(int i=3; i<=root; i+=2)\par
+    \{\par
+        if(all[i]==0)\par
+            vec.push_back(i);\par
+    \}\par
+\}\par
+int main()\par
+\{\par
+    int number,cnt=0,p=0,q=0;\par
+    vector<int> factor;\par
+    cin>>number;\par
+    factorization(number);\par
+    while(number>1&&vec.size()>cnt)\par
+    \{\par
+        if(number%vec[cnt]==0)\par
+        \{\par
+            number=number/vec[cnt];\par
+            factor.push_back(vec[cnt]);\par
+            q=1;\par
+        \}\par
+        else\par
+            cnt++;\par
+        if(number==1)\par
+            p=1;\par
+    \}\par
+    for(int i=0; i<factor.size(); i++)\par
+    \{\par
+        if(i!=factor.size()-1)\par
+            cout<<factor[i]<<" x ";\par
+        else\par
+            cout<<factor[i];\par
+    \}\par
+    if(p==0)\par
+    \{\par
+        if(q==1)\par
+        \{\par
+            cout<<" x "<<number<<endl;\par
+        \}\par
+        else\par
+            cout<<number<<endl;\par
+    \}\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Merge Sort\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int temp[100010];\par
+void mergesort(int *a,int low,int high)\par
+\{\par
+    if(low>=high)\par
+        return;\par
+    int mid=(low+high)/2;\par
+    mergesort(a,low,mid);\par
+    mergesort(a,mid+1,high);\par
+    int i=low;\par
+    int j=mid+1;\par
+    int index=0;\par
+    while(i<=mid&&j<=high)\par
+    \{\par
+        if(a[i]<a[j])\par
+        \{\par
+            temp[index]=a[i];\par
+            i++;\par
+        \}\par
+        else\par
+        \{\par
+            temp[index]=a[j];\par
+            j++;\par
+        \}\par
+        index++;\par
+    \}\par
+    while(i<=mid)\par
+    \{\par
+        temp[index]=a[i];\par
+        i++;\par
+        index++;\par
+    \}\par
+    while(j<=high)\par
+    \{\par
+        temp[index]=a[j];\par
+        j++;\par
+        index++;\par
+    \}\par
+    for(int i=low,index=0; i<=high; i++,index++)\par
+    \{\par
+        a[i]=temp[index];\par
+    \}\par
+\}\par
+int main()\par
+\{\par
+    int n;\par
+    cin>>n;\par
+    int a[n+1];\par
+    for(int i=0; i<n; i++)\par
+        cin>>a[i];\par
+    mergesort(a,0,n-1);\par
+    for(int i=0; i<n; i++)\par
+        cout<<a[i]<<"\\t";\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Quick Sort\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+void quicksort(int *a,int low,int high)\par
+\{\par
+    if(low>=high)\par
+        return;\par
+    int i=low;\par
+    int j=high;\par
+    int pivot=a[low];\par
+    bool cnt=0;\par
+    while(i<j)\par
+    \{\par
+        if(cnt==0)\par
+        \{\par
+            if(pivot<=a[j])\par
+            \{\par
+                j--;\par
+            \}\par
+            else\{\par
+                a[i]=a[j];\par
+                i++;\par
+                cnt=1;\par
+            \}\par
+        \}\par
+        else\{\par
+            if(pivot>=a[i])\par
+            \{\par
+                i++;\par
+            \}\par
+            else\{\par
+                a[j]=a[i];\par
+                j--;\par
+                cnt=0;\par
+            \}\par
+        \}\par
+    \}\par
+    a[i]=pivot;\par
+    quicksort(a,low,i-1);\par
+    quicksort(a,i+1,high);\par
+\}\par
+int main()\par
+\{\par
+    int n;\par
+    cin>>n;\par
+    int a[n+1];\par
+    for(int i=0;i<n;i++)\par
+        cin>>a[i];\par
+    quicksort(a,0,n-1);\par
+    for(int i=0;i<n;i++)\par
+        cout<<a[i]<<"\\t";\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 List\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int main()\par
+\{\par
+    list<int>mylist;\par
+    list<int>::iterator it;\par
+    mylist.push_back(10);\par
+    mylist.push_back(15);\par
+    mylist.push_back(19);\par
+    mylist.push_back(12);\par
+    mylist.push_front(56);\par
+    mylist.push_front(5);\par
+    int siz=mylist.size();\par
+    for(it=mylist.begin();it!=mylist.end();it++)\par
+        cout<<*it<<" ";\par
+    cout<<endl<<endl;\par
+    mylist.reverse();\par
+    for(it=mylist.begin();it!=mylist.end();it++)\par
+        cout<<*it<<" ";\par
+    cout<<endl<<endl;\par
+    ///mylist.clear();\par
+    ///cout<<mylist.size();\par
+    cout<<endl<<endl;\par
+    list<int>lis(4,9);\par
+    for(it=lis.begin();it!=lis.end();it++)\par
+        cout<<*it<<"\\t";\par
+    cout<<endl<<endl;\par
+    cout<<"COPY"<<endl<<endl;\par
+    int a[5]=\{1,3,5,7,9\};\par
+    list<int>b(a,a+5);\par
+    for(it=b.begin();it!=b.end();it++)\par
+        cout<<*it<<"\\t";\par
+    cout<<endl<<endl;\par
+    cout<<"INSERT"<<endl<<endl;\par
+    it=mylist.begin();\par
+    it++;\par
+    mylist.insert(it,7);\par
+    for(it=mylist.begin();it!=mylist.end();it++)\par
+        cout<<*it<<"\\t";\par
+    cout<<endl<<endl;\par
+    it=find(mylist.begin(),mylist.end(),19);\par
+    mylist.insert(it,18);\par
+    for(it=mylist.begin();it!=mylist.end();it++)\par
+        cout<<*it<<"\\t";\par
+    cout<<endl<<endl;\par
+    cout<<"DELETE......"<<endl<<endl;\par
+    it=mylist.begin();\par
+    mylist.erase(it);\par
+    for(it=mylist.begin();it!=mylist.end();it++)\par
+        cout<<*it<<"\\t";\par
+    cout<<endl<<endl;\par
+    it=find(mylist.begin(),mylist.end(),56);\par
+    mylist.erase(it);\par
+    for(it=mylist.begin();it!=mylist.end();it++)\par
+        cout<<*it<<"\\t";\par
+    cout<<endl<<endl;\par
+    cout<<"CHECK EMPTY"<<endl<<endl;\par
+    if(mylist.empty())\par
+        cout<<"EMPTY"<<endl;\par
+    else\par
+        cout<<"FILLED"<<endl;\par
+    cout<<endl<<endl;\par
+    cout<<"FIRST AND LAST ELEMENT"<<endl<<endl;\par
+    cout<<mylist.front()<<endl;\par
+    cout<<mylist.back()<<endl;\par
+    cout<<endl<<endl;\par
+    cout<<"DELETE FROM FIRST AND LAST"<<endl<<endl;\par
+    mylist.pop_front();\par
+    mylist.pop_back();\par
+    for(it=mylist.begin();it!=mylist.end();it++)\par
+        cout<<*it<<"\\t";\par
+    cout<<endl<<endl;\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Map\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int main()\par
+\{\par
+    map<string,int>m;\par
+    map<string,int>::iterator it;\par
+    m["dipta"]=42;\par
+    m["arnob"]=45;\par
+    m["arnob"]=48;\par
+    m.insert(make_pair("nabil",49));\par
+    printf("%d\\n",m["arnob"]);\par
+    printf("%d\\n",m["nabil"]);\par
+    cout<<endl<<endl;\par
+    it=m.begin();\par
+    cout<<it->first<<"\\t"<<it->second<<endl;\par
+    it++;\par
+    cout<<it->first<<"\\t"<<it->second<<endl;\par
+    cout<<endl<<endl;\par
+    cout<<"LOOP"<<endl<<endl;\par
+    for(it=m.begin();it!=m.end();it++)\par
+        cout<<it->first<<"\\t"<<it->second<<endl;\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Pair\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int main()\par
+\{\par
+    pair<string,int>p;\par
+    p.first="dipta";\par
+    p.second=45;\par
+    cout<<p.first<<" "<<p.second<<endl;\par
+    cout<<endl<<endl;\par
+    vector<pair<int,string> >vec;\par
+    vector<pair<int,string> >::iterator it;\par
+    vec.push_back(make_pair(21,"arnob"));\par
+    vec.push_back(make_pair(22,"nabil"));\par
+    cout<<vec[0].first<<" "<<vec[0].second<<endl;\par
+    cout<<vec[1].first<<" "<<vec[1].second<<endl;\par
+    cout<<endl<<endl;\par
+    cout<<"ITERATION.."<<endl<<endl;\par
+    for(it=vec.begin();it!=vec.end();it++)\par
+        cout<<it->first<<" "<<it->second<<endl;\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Set\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+int main()\par
+\{\par
+    set<string> s;\par
+    set<string> :: iterator it;\par
+    s.insert("nabil");\par
+    s.insert("arnob");\par
+    s.insert("mainul");\par
+    s.insert("sabbir");\par
+    for(it=s.begin();it!=s.end();it++)\par
+        cout<<*it<<endl;\par
+    pair<set <string>::iterator,bool> p;\par
+    p=s.insert("akhi");\par
+    if(p.second==false)\par
+        cout<<"cannot insert"<<endl;\par
+    else\par
+        cout<<"CAN BE INSERTED"<<endl;\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 Stack\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+#include<stack>\par
+using namespace std;\par
+int main()\par
+\{\par
+    stack<string> s;\par
+    s.push("dipto");\par
+    s.push("nabil");\par
+    s.push("arnob");\par
+    s.push("mainul");\par
+    s.push("sabbir");\par
+    s.push("borhan");\par
+    s.pop();\par
+    cout<<s.top()<<endl;\par
+    cout<<endl<<endl;\par
+    while(!s.empty())\par
+    \{\par
+        string x;\par
+        x=s.top();\par
+        cout<<x<<endl;\par
+        s.pop();\par
+    \}\par
+    return 0;\par
+\}\par
+................................................................................................................................................\par
+\ul\b\fs28 STL\par
+\ulnone\b0\fs24 ................................................................................................................................................\par
+#include<bits/stdc++.h>\par
+using namespace std;\par
+bool myfunc(int a,int b)\par
+\{\par
+    return (a>b);\par
+\}\par
+int main()\par
+\{\par
+    vector<int>vec;\par
+    int n,a;\par
+    cin>>n;\par
+    for(int i=1;i<=n;i++)\par
+    \{\par
+        cin>>a;\par
+        vec.push_back(a);\par
+    \}\par
+    sort(vec.begin(),vec.begin()+3);\par
+    for(int i=0;i<vec.size();i++)\par
+        cout<<vec[i]<<" ";\par
+    cout<<endl<<endl;\par
+    sort(vec.begin(),vec.end());\par
+    for(int i=0;i<vec.size();i++)\par
+        cout<<vec[i]<<" ";\par
+\par
+    cout<<endl<<endl;\par
+    sort(vec.begin(),vec.end(),myfunc);\par
+    for(int i=0;i<vec.size();i++)\par
+    \{\par
+        cout<<vec[i]<<" ";\par
+    \}\par
+    return 0;\par
+\}\ul\b\fs28\par
+}
+ 
